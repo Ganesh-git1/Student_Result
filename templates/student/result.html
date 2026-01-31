@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block title %}Check Result{% endblock %}
+{% block content %}
+  <section class="card card-lg">
+    <div class="card-header">
+      <h2>Check Student Result</h2>
+      <p class="muted">Enter the roll number to view results</p>
+    </div>
+
+    <div class="result-form">
+      <form class="row form-inline" method="get">
+        <input class="input" type="text" name="roll" value="{{ roll }}" placeholder="e.g. 2023CS001" required>
+        <button class="btn" type="submit">Check</button>
+      </form>
+      <p class="form-note">Enter the roll number to view results</p>
+    </div>
+
+
+    {% if student %}
+    <div class="student-info">
+      <div class="student-meta">
+        <h3>{{ student.name }}</h3>
+        <div class="muted">Roll: <strong>{{ student.roll }}</strong></div>
+        {% if student.email %}<div class="muted">Email: {{ student.email }}</div>{% endif %}
+      </div>
+      <div class="summary">
+        <div class="summary-item">
+          <div class="summary-title">Subjects</div>
+          <div class="summary-value">{{ results|length }}</div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-title">Average</div>
+          <div class="summary-value">
+            {% if results|length %}
+              {# compute total percentage by iterating and calling the method #}
+              {% set total = 0 %}
+              {% for rr in results %}
+                {% set total = total + rr.percentage() %}
+              {% endfor %}
+              {{ '%.2f' % (total / (results|length)) }}%
+            {% else %}
+              -
+            {% endif %}
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Subject</th>
+            <th class="text-right">Marks</th>
+            <th class="text-right">Max</th>
+            <th class="text-right">Percentage</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in results %}
+          <tr>
+            <td>{{ r.subject }}</td>
+            <td class="text-right">{{ r.marks }}</td>
+            <td class="text-right">{{ r.max_marks }}</td>
+            <td class="text-right">{{ '%.2f' % r.percentage() }}%</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+  </section>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}Import Students{% endblock %}
+
+{% block content %}
+<section class="card">
+  <div class="card-header">
+    <h2>Import Students (CSV)</h2>
+    <p class="muted">Upload a CSV with columns <strong>roll,name,email</strong>. Email is optional.</p>
+  </div>
+
+  <form method="post" enctype="multipart/form-data" style="margin-top:12px;">
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+      <input class="input" type="file" name="file" accept=".csv" required>
+      <label style="display:flex;align-items:center;gap:8px;">
+        <input type="checkbox" name="update_existing" value="1">
+        <span class="muted">Update existing students (if roll matches)</span>
+      </label>
+      <button class="btn" type="submit">Upload & Import</button>
+    </div>
+  </form>
+
+  <div style="margin-top:16px;">
+    <h4>Sample CSV</h4>
+    <pre style="background:rgba(255,255,255,0.02);padding:12px;border-radius:8px;">roll,name,email
+2023CS001,Ankit Kumar,ankit@example.com
+2023CS002,Sara Rao,sara@example.com
+2023EC010,Rajesh Singh,</pre>
+  </div>
+
+  {% if summary %}
+  <div style="margin-top:16px;">
+    <h4>Summary</h4>
+    <ul>
+      <li>Added: <strong>{{ summary.added }}</strong></li>
+      <li>Updated: <strong>{{ summary.updated }}</strong></li>
+      <li>Skipped (already existed): <strong>{{ summary.skipped }}</strong></li>
+    </ul>
+
+    {% if summary.errors %}
+      <h5>Errors</h5>
+      <ul>
+        {% for e in summary.errors %}
+          <li style="color:var(--danger)">{{ e }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </div>
+  {% endif %}
+</section>
+{% endblock %}
